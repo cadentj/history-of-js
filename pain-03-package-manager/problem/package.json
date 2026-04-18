@@ -1,0 +1,8 @@
+{
+  "name": "pain-03-package-manager-solution",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "marked": "^16.4.1"
+  }
+}
