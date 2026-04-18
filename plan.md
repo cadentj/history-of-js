@@ -54,7 +54,6 @@ Forced the IIFE pattern and "namespace object" pattern as poor-man's modules. Mo
 - **IIFE** (Immediately Invoked Function Expression) — `(function(){ ... })()`. A function you define and call in the same expression. Everything declared inside is scoped to the function, not leaked to `window`.
 - **Namespace object pattern** — instead of 30 globals (`addMessage`, `renderAll`, `sendToApi`, ...), you make *one* global (`APP`) and hang everything off it: `APP.state.addMessage(...)`, `APP.render.renderAll()`. Poor-man's modules.
 
-
 **Chat app step:** 
 v1 is one `index.html` + one `<script>` tag. 
 
