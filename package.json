@@ -1,17 +1,16 @@
 {
-  "name": "js-ecosystem-plan",
+  "name": "history-of-js",
   "private": true,
   "type": "module",
   "scripts": {
     "exercise": "bash scripts/exercise.sh",
     "solution": "bash scripts/exercise.sh --solution",
     "generate:exercise": "tsx scripts/generate-exercises.ts",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs",
-    "app:dev": "npm --prefix app run dev",
-    "app:build": "npm --prefix app run build",
-    "app:preview": "npm --prefix app run preview"
+    "app:dev": "pnpm --filter web dev",
+    "app:build": "pnpm --filter web build",
+    "app:preview": "pnpm --filter web preview",
+    "router:dev": "pnpm --filter router dev",
+    "runtime:dev": "pnpm --filter runtime dev"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
@@ -20,7 +19,6 @@
     "acorn-walk": "^8.3.5",
     "astring": "^1.9.0",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.3",
-    "vitepress": "^1.6.3"
+    "typescript": "^6.0.3"
   }
 }

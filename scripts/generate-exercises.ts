@@ -1,12 +1,13 @@
 /**
- * Generate chapters/pain-NN/exercises/* from chapters/pain-NN/solutions/*.
+ * Generate exercises/pain-NN/* from chapters/pain-NN/* (canonical solution tree).
  * Strips regions delimited by BEGIN:SOLUTION / END:SOLUTION (JS or HTML comments).
  * Hand-authored TODO comments outside those markers flow through untouched.
+ * Skips README.md and lesson.json (chapter metadata, not workspace files).
  *
- * Run: npm run generate:exercise
+ * Run: pnpm run generate:exercise
  */
-import { readFileSync, writeFileSync, copyFileSync, mkdirSync, readdirSync, statSync } from 'node:fs';
-import { dirname, join, relative, resolve, extname } from 'node:path';
+import { readFileSync, writeFileSync, copyFileSync, mkdirSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { basename, dirname, join, relative, resolve, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -24,24 +25,30 @@ function strip(path: string, text: string): string {
 
 const SKIP_DIRS = new Set(['node_modules', '.git']);
 
-function walk(dir: string): string[] {
+function isChapterMetaFile(fullPath: string): boolean {
+  const b = basename(fullPath);
+  return b === 'README.md' || b === 'lesson.json';
+}
+
+function walkChapterFiles(dir: string): string[] {
   const out: string[] = [];
   for (const entry of readdirSync(dir)) {
     if (SKIP_DIRS.has(entry)) continue;
     const full = join(dir, entry);
-    if (statSync(full).isDirectory()) out.push(...walk(full));
-    else out.push(full);
+    if (statSync(full).isDirectory()) out.push(...walkChapterFiles(full));
+    else if (!isChapterMetaFile(full)) out.push(full);
   }
   return out;
 }
 
 function generate(pain: number): number {
   const nn = String(pain).padStart(2, '0');
-  const src = join(ROOT, 'chapters', `pain-${nn}`, 'solutions');
-  const dst = join(ROOT, 'chapters', `pain-${nn}`, 'exercises');
+  const src = join(ROOT, 'chapters', `pain-${nn}`);
+  const dst = join(ROOT, 'exercises', `pain-${nn}`);
 
   let count = 0;
-  for (const file of walk(src)) {
+  if (!existsSync(src)) return 0;
+  for (const file of walkChapterFiles(src)) {
     const rel = relative(src, file);
     const target = join(dst, rel);
     mkdirSync(dirname(target), { recursive: true });
@@ -59,13 +66,14 @@ function generate(pain: number): number {
 
 function discoverPains(): number[] {
   const chapters = join(ROOT, 'chapters');
+  if (!existsSync(chapters)) return [];
   const pains: number[] = [];
   for (const name of readdirSync(chapters)) {
     const m = name.match(/^pain-(\d+)$/);
     if (!m) continue;
-    const p = join(chapters, name, 'solutions');
+    const dir = join(chapters, name);
     try {
-      if (statSync(p).isDirectory()) pains.push(parseInt(m[1], 10));
+      if (statSync(dir).isDirectory()) pains.push(parseInt(m[1], 10));
     } catch {}
   }
   return pains.sort((a, b) => a - b);

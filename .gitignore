@@ -1,8 +1,6 @@
 node_modules/
 .env
-worker/.dev.vars
-docs/.vitepress/cache/
-docs/.vitepress/dist/
+apps/runtime/.dev.vars
 
 __pycache__/
 

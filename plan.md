@@ -1,6 +1,6 @@
 # Plan
 
-The same material is also published as a VitePress site: run `npm install` and `npm run docs:dev`, or browse `docs/` (overview: `docs/index.md`, background reading on JS language/async: `docs/background.md`, pain pages: `docs/pains/pain-NN.md`, sessions: `docs/sessions.md`).
+Curriculum prose lives under `chapters/` (overview: `chapters/index.md`, async background: `chapters/background.md`, per-pain notes: `chapters/pain-NN/README.md`, sessions: `chapters/sessions.md`). The interactive workshop UI is `pnpm run app:dev` (from repo root; runs the Vite app under `apps/web/`).
 
 ---
 
@@ -24,7 +24,7 @@ We'll build a toy chat app. A user types messages, an LLM responds. We start as 
 
 ### Source conventions
 
-We start writing **plain, old-style JavaScript** — no `let`/`const`, no arrow functions, no modules. ES3/ES5-ish. The one deliberate exception is async code: `docs/background.md` covers the XHR → Promises → async/await arc as background reading, and from that point on we use async/await everywhere — it's too painful to read deeply-nested callbacks for the whole project. Other modern syntax (let/const, arrows, classes, destructuring) gets introduced later via a transpile step (pain #5).
+We start writing **plain, old-style JavaScript** — no `let`/`const`, no arrow functions, no modules. ES3/ES5-ish. The one deliberate exception is async code: `chapters/background.md` covers the XHR → Promises → async/await arc as background reading, and from that point on we use async/await everywhere — it's too painful to read deeply-nested callbacks for the whole project. Other modern syntax (let/const, arrows, classes, destructuring) gets introduced later via a transpile step (pain #5).
 
 ### Tooling language
 
@@ -32,7 +32,7 @@ All the tools we build (bundler, type-stripper, dev server, source-map generator
 
 ### Stretch / optional
 
-- **Token-level streaming** (ReadableStream / async iterators) as an optional enhancement for LLM responses. Pairs naturally with `docs/background.md` (async) as the "what comes after async/await" beat. Skip unless time allows.
+- **Token-level streaming** (ReadableStream / async iterators) as an optional enhancement for LLM responses. Pairs naturally with `chapters/background.md` (async) as the "what comes after async/await" beat. Skip unless time allows.
 - **Triton-puzzle-style exercises** — concrete before/after perf targets the group races to hit (e.g., "get the settings page under 50KB"). Fit naturally at pains 8, 10, 12, 13.
 
 ### Exercise Thoughts: 
@@ -497,7 +497,7 @@ ES6 (2015) shipped classes, arrow functions, `let`/`const`, destructuring. Devel
 
 **Why it matters historically:** motivated **transpilers**. Babel (2014, originally "6to5") compiled ES6 → ES5 so you could write modern code and ship it everywhere. This established the pattern that the JS you *write* is not the JS that *runs*. Every tool downstream (TypeScript, JSX, Svelte compilation) inherits this pattern.
 
-**Chat app step:** we've been writing `var` everywhere, IIFEs, no arrow functions (async/await is the one thing we kept modern, per `docs/background.md`). Tiring. We want the full modern toolkit — `let`/`const`, arrows, classes, template strings, destructuring. We add a **transpile step** to our pipeline: write modern source → our tool rewrites to ES5 → bundler concatenates → ship.
+**Chat app step:** we've been writing `var` everywhere, IIFEs, no arrow functions (async/await is the one thing we kept modern, per `chapters/background.md`). Tiring. We want the full modern toolkit — `let`/`const`, arrows, classes, template strings, destructuring. We add a **transpile step** to our pipeline: write modern source → our tool rewrites to ES5 → bundler concatenates → ship.
 
 ### Plan: toy transpiler (Opus 4.7)
 
@@ -741,7 +741,7 @@ A modern project has `package.json`, `tsconfig.json`, `vite.config.ts`, `eslint.
 
 Probably too many for three 2-hour sessions. A rough grouping:
 
-- **Session 1 — Async, ship the chat app, feel the module pain:** background reading (`docs/background.md`) for the XHR → Promises → async/await arc + event loop; pains 1, 2, 3, 4, 7. Build chat app v1 (single HTML + script tag, async/await fetch through a Node proxy). Split into multiple files and feel the globals collision. Install `marked` (via our toy package manager). Split the proxy across files with CJS. Write the zero-dep Node bundler. End with a multi-file chat app running from one bundled `<script>`.
+- **Session 1 — Async, ship the chat app, feel the module pain:** background reading (`chapters/background.md`) for the XHR → Promises → async/await arc + event loop; pains 1, 2, 3, 4, 7. Build chat app v1 (single HTML + script tag, async/await fetch through a Node proxy). Split into multiple files and feel the globals collision. Install `marked` (via our toy package manager). Split the proxy across files with CJS. Write the zero-dep Node bundler. End with a multi-file chat app running from one bundled `<script>`.
 - **Session 2 — Tooling layer:** pains 5, 6, 8, 9, 10, 11, 12. Transpile step (modern JS → ES5), port to TS, route-level code splitting + tree-shaking + minification against per-page bundle budgets, dev server with HMR, Vite-style dev, swap to esbuild for speed, source maps. Biggest session — probably needs trimming.
 - **Session 3 — The modern stack:** pains 13, 14, 15, 16, 17. Build a tiny reactive framework (+ optional V8 puzzle) and refactor the UI on top of it, deploy the proxy to Cloudflare Workers, migrate to pnpm, extract + publish core as a dual CJS/ESM package, retrospective on configs.
 

@@ -1,0 +1,17 @@
+{
+  "name": "runtime",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-01",
+  "containers": [
+    {
+      "class_name": "StudentSession",
+      "image": "../gateway/Dockerfile",
+      "max_instances": 50,
+      "instance_type": "lite"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [{ "name": "STUDENT_SESSION", "class_name": "StudentSession" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["StudentSession"] }]
+}
