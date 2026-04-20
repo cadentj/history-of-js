@@ -7,3 +7,8 @@ __pycache__/
 dist/
 
 .wrangler/
+
+# Agent junk
+.agents/
+.claude/
+.cursor/
